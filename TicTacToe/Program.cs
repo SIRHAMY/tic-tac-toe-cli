@@ -95,12 +95,11 @@ public static class GameHelpers
         var yOkay = int.TryParse(parts[1], out int y);
         if (!xOkay || !yOkay)
         {
-            Console.WriteLine("Invalid numbers provided");
+            return Result.Failure<Coordinates, string>("Invalid numbers provided");
         }
 
         return Result.Success<Coordinates, string>(new Coordinates(
             X: x,
-
             Y: y
         ));
     }
