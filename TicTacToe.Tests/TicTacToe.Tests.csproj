@@ -18,4 +18,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TicTacToe\tic-tac-toe-cli.csproj" />
+  </ItemGroup>
+
 </Project>
