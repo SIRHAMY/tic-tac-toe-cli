@@ -43,7 +43,6 @@ public record TicTacToeBoard(IReadOnlyList<IReadOnlyList<Player?>> Board)
             .Select(row => row.ToList())
             .ToList();
 
-        // var newColumn = Board[move.X].ToList();
         mutableBoard[move.X][move.Y] = move.Player;
         return Result.Success<TicTacToeBoard, string>(
             this with { Board = mutableBoard }
