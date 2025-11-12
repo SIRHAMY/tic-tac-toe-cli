@@ -182,9 +182,41 @@ public class TicTacToeGame
     {
         return this.State.Board.GetBoardState();
     }
-    
+
     public NextTurn GetNextTurn()
     {
         return this.State.NextTurn;
+    }
+}
+
+public static class ComputerPlayer
+{
+    /*
+    What would I change
+    * read only lists to TicTacToeBoard
+    * Computer smarter - heuristics, ai, algorithm, look ahead
+    * Display and input - 
+    */
+
+    // todo: refactor to use TicTacToeBoard
+    public static Coordinates GenerateMove(IReadOnlyList<IReadOnlyList<Player?>> boardState)
+    {
+        /*
+        * Random
+
+        */
+        // var boardState = board.GetBoardState();
+        var possibleMoves = new List<Coordinates>();
+        for(var x = 0; x < boardState.Count; x++)
+        {
+            for(var y = 0; y < boardState[0].Count; y++)
+            {
+                if(boardState[x][y] == null)
+                {
+                    possibleMoves.Add(new Coordinates(X: x, Y: y));
+                }
+            }
+        }
+        return possibleMoves.OrderBy(_ => Random.Shared.Next()).First();
     }
 }

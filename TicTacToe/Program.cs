@@ -46,26 +46,48 @@ while (true)
     else if (nextTurn is NextTurn.PlayerTurn playerTurn)
     {
         Console.WriteLine($"Next turn: {playerTurn.NextPlayer}");
-        Console.WriteLine($"Input move as X Y (e.g. 0 1)");
-        
-        var input = Console.ReadLine();
-        var inputCoordinatesResult = GameHelpers.ParseGameInputToCoordinates(input);
-        if (inputCoordinatesResult.IsFailure)
-        {
-            Console.WriteLine(inputCoordinatesResult.Error);
-            continue;
-        }
 
-        var moveCoordinates = inputCoordinatesResult.Value;
-        var playerMove = new TicTacToeMove(
-            Player: playerTurn.NextPlayer,
-            X: moveCoordinates.X,
-            Y: moveCoordinates.Y);
-        var moveResult = gameEngine.MakeMove(move: playerMove);
-        if(moveResult.IsFailure)
+        if(playerTurn.NextPlayer == Player.Player1)
         {
-            Console.WriteLine($"Invalid move: {moveResult.Error}");
-            continue;
+            Console.WriteLine($"Input move as X Y (e.g. 0 1)");
+        
+            var input = Console.ReadLine();
+            var inputCoordinatesResult = GameHelpers.ParseGameInputToCoordinates(input);
+            if (inputCoordinatesResult.IsFailure)
+            {
+                Console.WriteLine(inputCoordinatesResult.Error);
+                continue;
+            }
+
+            var moveCoordinates = inputCoordinatesResult.Value;
+            var playerMove = new TicTacToeMove(
+                Player: playerTurn.NextPlayer,
+                X: moveCoordinates.X,
+                Y: moveCoordinates.Y);
+            var moveResult = gameEngine.MakeMove(move: playerMove);
+            if(moveResult.IsFailure)
+            {
+                Console.WriteLine($"Invalid move: {moveResult.Error}");
+                continue;
+            }   
+        } else
+        {
+            /*
+            Function - game state -> move 
+            * Pipe this to the game itself
+            * Throw if the move is invalid
+            */
+            var computerMove = ComputerPlayer.GenerateMove(gameEngine.GetCurrentBoard());
+            // var moveCoordinates = inputCoordinatesResult.Value;
+            var playerMove = new TicTacToeMove(
+                Player: playerTurn.NextPlayer,
+                X: computerMove.X,
+                Y: computerMove.Y);
+            var moveResult = gameEngine.MakeMove(move: playerMove);
+            if(moveResult.IsFailure)
+            {
+                throw new Exception("Computer made error!");
+            }   
         }
     }
     else
@@ -95,12 +117,11 @@ public static class GameHelpers
         var yOkay = int.TryParse(parts[1], out int y);
         if (!xOkay || !yOkay)
         {
-            Console.WriteLine("Invalid numbers provided");
+            return Result.Failure<Coordinates, string>("Invalid numbers provided");
         }
 
         return Result.Success<Coordinates, string>(new Coordinates(
             X: x,
-
             Y: y
         ));
     }
